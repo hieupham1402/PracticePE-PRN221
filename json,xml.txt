@@ -1,0 +1,101 @@
+Để import một tệp JSON hoặc XML trong ứng dụng của bạn, bạn cần tạo một phần của mã để mở tệp, đọc dữ liệu từ tệp đó và sau đó chuyển đổi nó thành các đối tượng tương ứng trong ứng dụng của bạn. Dưới đây là cách bạn có thể làm điều đó cho cả tệp JSON và tệp XML:
+
+Import tệp JSON:
+csharp
+Copy code
+private void btnLoadJson_Click(object sender, RoutedEventArgs e)
+{
+    OpenFileDialog openFileDialog = new OpenFileDialog();
+    openFileDialog.DefaultExt = ".json";
+    openFileDialog.Filter = "JSON FILES (*.json)|*.json|All Files (*.*)|*.*";
+    
+    if (openFileDialog.ShowDialog() == true)
+    {
+        string jsonContent = File.ReadAllText(openFileDialog.FileName);
+        List<Product> importedProducts = JsonSerializer.Deserialize<List<Product>>(jsonContent);
+
+        // Sử dụng danh sách `importedProducts` trong ứng dụng của bạn.
+        // Ví dụ: hiển thị nó trong một ListBox hoặc GridView.
+        // listBox.ItemsSource = importedProducts;
+        
+        MessageBox.Show("Imported JSON successfully");
+    }
+}
+
+
+
+Import tệp XML:
+Để import tệp XML, bạn cần sử dụng một thư viện xử lý XML như System.Xml.Linq hoặc XmlSerializer. Dưới đây là một ví dụ sử dụng System.Xml.Linq:
+
+csharp
+Copy code
+private void btnLoadXml_Click(object sender, RoutedEventArgs e)
+{
+    OpenFileDialog openFileDialog = new OpenFileDialog();
+    openFileDialog.DefaultExt = ".xml";
+    openFileDialog.Filter = "XML FILES (*.xml)|*.xml|All Files (*.*)|*.*";
+    
+    if (openFileDialog.ShowDialog() == true)
+    {
+        XDocument xmlDoc = XDocument.Load(openFileDialog.FileName);
+        List<Product> importedProducts = xmlDoc.Root
+            .Elements("Product")
+            .Select(element => new Product
+            {
+                // Đọc các thuộc tính và giá trị từ XML và đặt chúng vào các trường của đối tượng Product.
+                Id = (int)element.Element("Id"),
+                Name = (string)element.Element("Name"),
+                Price = (decimal)element.Element("Price"),
+                // Thêm các trường khác tương tự ở đây.
+            })
+            .ToList();
+
+        // Sử dụng danh sách `importedProducts` trong ứng dụng của bạn.
+        // Ví dụ: hiển thị nó trong một ListBox hoặc GridView.
+        // listBox.ItemsSource = importedProducts;
+        
+        MessageBox.Show("Imported XML successfully");
+    }
+}
+Trong cả hai ví dụ trên, Product là lớp đại diện cho dữ liệu bạn lưu trữ trong tệp JSON hoặc XML, và bạn phải đảm bảo rằng cấu trúc dữ liệu trong tệp JSON/XML phù hợp với lớp Product của bạn.
+
+
+
+
+
+
+
+Để lưu một tệp XML trong ứng dụng của bạn, bạn có thể sử dụng thư viện xử lý XML như System.Xml.Linq hoặc XmlSerializer. Dưới đây là cách bạn có thể lưu một danh sách đối tượng vào một tệp XML sử dụng System.Xml.Linq:
+
+csharp
+Copy code
+private void btnSaveXml_Click(object sender, RoutedEventArgs e)
+{
+    SaveFileDialog saveFileDialog = new SaveFileDialog();
+    saveFileDialog.DefaultExt = ".xml";
+    saveFileDialog.Filter = "XML FILES (*.xml)|*.xml|All Files (*.*)|*.*";
+    
+    if (saveFileDialog.ShowDialog() == true)
+    {
+        // Tạo một tài liệu XML mới
+        XDocument xmlDoc = new XDocument(
+            new XElement("Products",
+                from product in yourProductsList
+                select new XElement("Product",
+                    new XElement("Id", product.Id),
+                    new XElement("Name", product.Name),
+                    new XElement("Price", product.Price),
+                    // Thêm các trường khác tương tự ở đây.
+                )
+            )
+        );
+
+        // Lưu tài liệu XML vào tệp
+        xmlDoc.Save(saveFileDialog.FileName);
+
+        MessageBox.Show("Saved XML successfully");
+    }
+}
+Trong mã trên, yourProductsList là danh sách các đối tượng Product mà bạn muốn lưu vào tệp XML. Đảm bảo rằng cấu trúc dữ liệu trong tệp XML phù hợp với cấu trúc của đối tượng Product.
+
+Sau đó, bạn có thể sử dụng tệp XML lưu trữ để nạp lại dữ liệu sau này bằng cách sử dụng mã tương tự như phần "Import tệp XML" trong câu trả lời trước đó.
