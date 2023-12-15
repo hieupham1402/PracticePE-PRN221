@@ -8,6 +8,8 @@
         Title="EmployeeWindow" Height="650" Width="800">
     <Grid>
         <StackPanel Margin="0,0,371,315" Background="Aqua">
+            <Label Content="Employee Information" Foreground="Red" FontSize="25" HorizontalAlignment="Center"/>
+
             <Label Content="Employee ID"/>
             <TextBox TextWrapping="Wrap" Width="389" Name="employeeId" IsReadOnly="True" Text="{Binding Id}" DataContext="{Binding SelectedItem, ElementName=listEmployee}"/> 
             <Label Content="Employee Name"/>

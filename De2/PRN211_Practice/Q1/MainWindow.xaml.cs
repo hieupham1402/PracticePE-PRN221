@@ -34,16 +34,15 @@ namespace Q1
             context = new LuyenOnThiDBContext();
             //loadProduct();
             loadCategory();
-            
 
         }
-        public void loadProduct()
-        {
-            //lvProduct.ItemsSource = context.Products.Include(x => x.Category).ToList();
+            public void loadProduct()
+            {
+                //lvProduct.ItemsSource = context.Products.Include(x => x.Category).ToList();
 
-            List<Product> list = context.Products.Include(x => x.Category).ToList();
-            lvProduct.ItemsSource = list;
-        }
+                List<Product> list = context.Products.Include(x => x.Category).ToList();
+                lvProduct.ItemsSource = list;
+            }
 
         public void loadCategory()
         {
@@ -158,25 +157,40 @@ namespace Q1
         //Save file json
         private void btnSaveFile_Click(object sender, RoutedEventArgs e)
         {
+            // Tạo một hộp thoại lưu tệp
             SaveFileDialog saveFileDialog = new SaveFileDialog();
+
+            // Đặt định dạng mở rộng mặc định thành .json
             saveFileDialog.DefaultExt = ".json";
+
+            // Đặt bộ lọc để chỉ hiển thị các tệp JSON hoặc tất cả các tệp
             saveFileDialog.Filter = "JSON FILES (*.json)|*.json|All Files (*.*)|*.*";
+
+            // Hiển thị hộp thoại lưu tệp và kiểm tra xem người dùng đã chọn một tệp để lưu hay chưa
             if (saveFileDialog.ShowDialog() == true)
             {
+                // Tùy chọn cho quá trình chuyển đổi JSON
                 var jsonOptions = new JsonSerializerOptions
                 {
-                    WriteIndented = true,
+                    WriteIndented = true, // Định dạng đẹp để dễ đọc
                 };
-            
+
+                // Lấy danh sách sản phẩm từ nguồn dữ liệu (ở đây giả sử context là một đối tượng DbContext)
                 List<Product> productsList = context.Products.ToList();
-                productsList.ForEach(x => 
+
+                // Loại bỏ tham chiếu đệ quy của các đối tượng liên quan
+                productsList.ForEach(x =>
                 {
-                    x.Category = null;
+                    x.Category = null; // Đặt tham chiếu đến Category về null để tránh vòng lặp vô hạn
                 });
 
+                // Chuyển danh sách sản phẩm thành chuỗi JSON
                 string jsonContent = JsonSerializer.Serialize(productsList, jsonOptions);
 
+                // Ghi nội dung JSON vào tệp đã chọn
                 File.WriteAllText(saveFileDialog.FileName, jsonContent);
+
+                // Hiển thị thông báo khi quá trình lưu thành công
                 MessageBox.Show("Save Json successfully");
             }
         }
@@ -184,7 +198,7 @@ namespace Q1
         private void btnLoadFile_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.DefaultExt = ".json";
+            openFileDialog.DefaultExt = ".json"; // 
             openFileDialog.Filter = "JSON FILES (*.json)|*.json|All Files (*.*)|*.*";
 
             if(openFileDialog.ShowDialog() == true)
